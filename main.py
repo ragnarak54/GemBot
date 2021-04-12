@@ -1,7 +1,8 @@
 import config
 
-import cv2
 import discord
+from io import BytesIO
+from PIL import Image
 import pytesseract
 
 from discord.ext import commands
@@ -19,8 +20,11 @@ async def on_ready():
 async def get_gems(ctx, channel: discord.TextChannel):
     hist = channel.history()
     async for msg in hist:
-        print(msg.author)
-        print(msg.attachments)
+        buffer = BytesIO()
+        await msg.attachments[0].save(buffer)
+        buffer.seek(0)
+        img = Image.open(buffer)
+        print(pytesseract.image_to_string(img))
         break
 
 
